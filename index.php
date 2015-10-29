@@ -1,4 +1,19 @@
-<?php require 'lib/Parsedown.class.php'; ?>
+<?php
+require 'lib/Parsedown.class.php';
+if(isset($_GET['file'])){
+	$file = $_GET['file'];
+} else {
+	$file = 'preface.md';//默认首页
+}
+$file = 'file/'.$file;//文件路径（相对路径）
+$content = '';//初始化$content
+if(file_exists($file)){
+	$content = file_get_contents($file);
+} else {
+	header('HTTP/1.1 404 Not Found');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,17 +26,13 @@
 <body>
 <div class="container">
   <div class="col-sm-12 col-lg-12 col-md-12">
-    <?php
-    if(isset($_GET['file'])){
-		$file = $_GET['file'];
-	} else {
-		$file = 'preface.md';
-	}
-	$file = str_replace('<', '', $file);
-	$file = str_replace('>', '', $file);
-	$content = file_get_contents('file/'.$file);
+<?php
+if(empty($content)){
+	echo '<h1>页面不存在！</h1>';
+} else {
 	$Parsedown = new Parsedown();
 	echo $Parsedown->text($content); # prints: <p>Hello <em>Parsedown</em>!</p>
+}
 ?>
   </div>
   <div class="col-sm-12 col-lg-12 col-md-12">
